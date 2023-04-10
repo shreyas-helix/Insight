@@ -1,34 +1,39 @@
 import streamlit as st
-import openai, os
-st.title("Text Summarizer")
+from streamlit_option_menu import option_menu
+import sum.Summary_page as sp
+from home import homeWork as hW
 
-openai.api_key = os.getenv('OPENAI_KEY')
+st.set_page_config(layout="centered",page_title="AI Professor",page_icon="balloon")
 
-# initialize state variable 
-if "summary" not in st.session_state:
-  st.session_state["summary"] = ""
+#if you want a sidebar
+# with st.sidebar:
+#     selected = option_menu(
+#         menu_title="SpeedBar",
+#         options = ["Home",
+#                    "SnipRead",
+#                    "QueryPal"],
+#         menu_icon=["lightning"],
+#         icons= ["house","scissors","robot"],
+#         default_index= 0,
+#     )
 
-input_text = st.text_area(label='Enter Full text:', value="", height=300)
+# If you want it in middle of the page, uncomment down!
+    
+selected = option_menu(
+        # menu_title="SpeedBar",
+        menu_title=None,
+        options = ["Home",
+                   "SnipRead",
+                   "QueryPal"],
+        # menu_icon=["lightning"],
+        icons= ["house","scissors","robot"],
+        default_index= 0,
+        orientation= "horizontal"
+    )
 
-
-def summarize(prompt):
-    augmented_prompt = f"summarize this text: {prompt}"
-    try:
-        st.session_state["summary"] = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=augmented_prompt,
-            temperature=.5,
-            max_tokens=1000,
-        )["choices"][0]["text"]
-    except:
-        st.write('There was an error')
-
-
-st.button(
-    "Submit",
-    on_click=summarize,
-    kwargs={"prompt": input_text},
-)
-
-# configure text area to populate with current state of summary
-output_text = st.text_area(label='Summarized text:', value=st.session_state["summary"], height=300)
+if selected == "Home":
+    hW()
+if selected == "SnipRead":
+    sp.SnipRead()
+if selected == "QueryPal":
+    st.title(f"You are in {selected}")
